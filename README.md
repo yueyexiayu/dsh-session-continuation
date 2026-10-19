@@ -11,7 +11,7 @@ DeepSeek Harness 桌面本地插件，版本 **0.1.1**。在当前会话标题�
 
 需要支持 `conversation.session.header.actions`（list / session）和内置剪贴板接口的 DSH 桌面版。已核对 `0.2.1-alpha.4` 的官方槽位及 `sessionId` 属性契约；其他版本需另行核对。
 
-首次安装示例（私有仓库需要相应 GitHub 访问权限；目录已存在时先检查，不覆盖已有内容）：
+首次安装示例（目录已存在时先检查，不覆盖已有内容）：
 
 ```sh
 DSH_HOME="${DSH_HOME:-$HOME/.dsh}"
