@@ -1,0 +1,3 @@
+- insert:
+    - id: session-continuation
+      name: session-continuation/lib/index.js

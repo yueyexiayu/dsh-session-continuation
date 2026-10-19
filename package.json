@@ -1,0 +1,25 @@
+{
+  "name": "session-continuation",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "description": "在 DSH 会话标题旁复制完整会话 ID 或历史接续提示词。",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yueyexiayu/dsh-session-continuation.git"
+  },
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": { "test": "node --test test/*.test.mjs" },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "inject": ["@deepseek-ai/dsh-client-ui-conversation"]
+    }
+  }
+}
