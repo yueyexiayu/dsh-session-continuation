@@ -1,24 +1,41 @@
-# dsh-session-continuation
+<div align="center">
+<img src="docs/repo-assets/hero.svg" width="100%" alt="当前会话 ID、六行接续模板与剪贴板的原创示意，非历史导出截图" />
+<h1>session-continuation · 会话接续</h1>
+<p><strong>把会话定位和接续要求带走，不自动带走历史。</strong></p>
+<p>DeepSeek Harness 会话标题旁的「会话 ID」与「复制接续指令」。</p>
+<p><strong>简体中文</strong> · <a href="README.en.md">English</a></p>
+<p><a href="package.json">v0.1.1</a> · DSH desktop plugin</p>
+<p><a href="#核心能力">核心能力</a> · <a href="#工作方式">工作方式</a> · <a href="#快速开始">快速开始</a> · <a href="#复制模板">复制模板</a> · <a href="#验证与边界">验证与边界</a></p>
+</div>
 
-DeepSeek Harness 桌面本地插件，版本 **0.1.1**。在当前会话标题导航后提供两个紧凑按钮：
+---
 
-- **会话 ID**：复制当前完整会话 ID；鼠标悬停或键盘聚焦可查看完整 ID，宽窗口附短 ID。
-- **复制接续指令**：复制下方六行模板，仅首行插入当前完整 ID，供用户自行粘贴到新对话。
+一个只显示和复制信息的桌面本地插件：不创建对话、不发送提示词、不读取或导出历史，也不改 DSH 官方源码。**会话 ID 只是定位符，不代表新会话已自动读取全部上下文。**
 
-插件只显示和复制信息，不创建对话、不发送提示词、不读取或导出会话历史，也不修改 DSH 官方源码。
+## 核心能力
 
-## 安装
+<table><tr>
+<td width="33%"><strong>🔖 复制完整 ID</strong><br/><br/>唯一来源为官方槽位 props.sessionId；悬停/聚焦查看完整值，宽窗口显示短ID。</td>
+<td width="33%"><strong>📋 六行接续模板</strong><br/><br/>只在首行插入当前ID，由用户自行粘贴到新对话，明确历史只是背景。</td>
+<td width="33%"><strong>⌨️ 明确复制反馈</strong><br/><br/>原生按钮支持键盘；内置剪贴板明确返回 true 才显示成功，失败不伪装。</td>
+</tr></table>
 
-需要支持 `conversation.session.header.actions`（list / session）和内置剪贴板接口的 DSH 桌面版。已核对 `0.2.1-alpha.4` 的官方槽位及 `sessionId` 属性契约；其他版本需另行核对。
+## 工作方式
 
-首次安装示例（目录已存在时先检查，不覆盖已有内容）：
+![官方会话槽位提供 ID，插件生成模板，经内置剪贴板明确确认，由用户自行粘贴到新会话。](docs/repo-assets/workflow.zh-CN.svg)
+
+客户端只使用声明的 `ctx.slots`；Host 只是客户端包入口，无HTTP路由、服务注入或历史访问。官方 hideChrome 隐藏头部时，不另造重复入口。
+
+## 快速开始
+
+需要支持 `conversation.session.header.actions`（list/session）与内置剪贴板的 DSH桌面版。已核对0.2.1-alpha.4的槽位/属性契约，其他版本需另行确认。无第三方运行依赖。
 
 ```sh
-DSH_HOME="${DSH_HOME:-$HOME/.dsh}"
+export DSH_HOME="${DSH_HOME:-$HOME/.dsh}"
 git clone https://github.com/yueyexiayu/dsh-session-continuation.git "$DSH_HOME/plugins/session-continuation"
 ```
 
-在 `$DSH_HOME/profiles/desktop/cordis.patch.yml` 中保留全部现有配置，仅追加一次：
+保留现有配置，仅合并一次到 `$DSH_HOME/profiles/desktop/cordis.patch.yml`：
 
 ```yaml
 - insert:
@@ -26,21 +43,11 @@ git clone https://github.com/yueyexiayu/dsh-session-continuation.git "$DSH_HOME/
       name: ../../plugins/session-continuation/lib/index.js
 ```
 
-`name` 相对于该 desktop patch 文件解析，必须指向文件入口，不能只写插件目录。安装或修改 Host/加载声明后，完全退出 DSH 再打开；页面刷新不能证明 Host 配置已加载。插件没有需安装的第三方运行依赖，不使用 CLI 插件管理去修改 desktop profile。
-
-卸载时先移除上述加载项，再移除插件目录，完全退出并重开 DSH；不要清空其他插件的配置。
-
-## 行为与边界
-
-- 唯一 ID 来源是官方槽位组件的 `props.sessionId`，不从标题、URL 或其他会话推断。
-- 支持 UUID、`session-<n>`、`session-UUID`、`webhook-UUID` 等安全 token：字母/数字起始，后续允许字母、数字、`.`、`_`、`:`、`-`。空值、非字符串、空白/控制字符，以及 `null`/`undefined` 字面值禁用复制，不强制转换或修剪。
-- 使用 DSH 内置 `@deepseek-ai/dsh-client-ui-primitives.writeClipboard`；只有明确返回 `true` 才显示成功 2 秒。返回 `false`、拒绝、抛错或接口不可用会显示失败 4 秒，不在插件内实现 DOM fallback。
-- 写入期间两个按钮禁用；切换会话时以 React key 重建状态，清理定时器并忽略旧组件的异步反馈。已提交给系统的剪贴板写入无法撤销；切换后的新点击使用当前 ID。
-- 使用原生按钮，支持 Tab、Enter/Space 和可见焦点。窄容器隐藏短 ID，进一步变窄时纵向排列；沿用 DSH CSS 变量，不修改官方导航样式。
-- 官方 `hideChrome` 隐藏头部时，不另加重复入口。
-- 会话 ID 仅用于定位，不代表全部历史已自动加载，也不保证其他平台或无权限会话能读取。
+路径相对该patch文件并指向文件入口。安装/加载声明更新后完整退出重开DSH；不使用CLI插件管理修改desktop profile。卸载只移除本项及插件目录，不清空其他配置。
 
 ## 复制模板
+
+插件实际复制以下六行，英文文档也保留这份原文，以免让读者误以为插件会切换模板语言：
 
 ```text
 请读取 DSH 会话「<当前完整会话 ID>」的历史上下文。
@@ -51,21 +58,29 @@ git clone https://github.com/yueyexiayu/dsh-session-continuation.git "$DSH_HOME/
 会话 ID 仅用于定位，不代表全部上下文已自动加载。
 ```
 
-## 开发与验证
+## 验证与边界
 
-- Host 入口仅作为客户端包入口，无服务注入、HTTP 路由或历史访问。
-- Client bundle ID 和 list 注册 ID 均为 `session-continuation`。Client 仅读取声明过的 `ctx.slots`，通过 `slots.inject` → `slots.register` 挂载。
-- 包声明 `dsh.client.inject` 依赖 `@deepseek-ai/dsh-client-ui-conversation`；内置剪贴板模块通过模块加载器获取，不是 Cordis ctx 服务。
+<details>
+<summary><strong>ID、异步切换与剪贴板语义</strong></summary>
 
-在插件目录执行（本机可使用 `/usr/local/bin/node`）：
+ID需为字母/数字起始，后续允许字母、数字、`.`、`_`、`:`、`-`；支持UUID、session/webhook等安全token。空、非字符串、空白/控制字符及null/undefined字面值禁用复制，不修剪或强转。
+
+使用内置 `@deepseek-ai/dsh-client-ui-primitives.writeClipboard`；只有true显示成功2秒，false/异常/接口缺失显示失败4秒，无DOM fallback。写入中两按钮禁用；会话切换以React key重建，清理timer并丢弃旧异步反馈。已提交系统的剪贴板写入无法撤销，新点击使用当前ID。窄容器先隐藏短ID，再纵向布局，保留Tab/Enter/Space和可见焦点。
+
+</details>
 
 ```sh
+cd "$DSH_HOME/plugins/session-continuation"
 node --check lib/index.js
 node --check lib/client.js
 node --check test/client.test.mjs
 node --test test/*.test.mjs
 ```
 
-当前 36 项组件行为测试通过，覆盖独立六行预期、动态/无效 ID、真实返回值语义、成功/失败反馈、异步切换竞态和清理。测试使用 VM hooks 替代环境，不是 React DOM、原生剪贴板权限或 CSS 布局验证。
+既有记录为36项VM组件测试通过，不是React DOM、原生权限或CSS验收。真实桌面曾核对双会话剪贴板、A→B→A、键盘及965/701宽布局，但观察到一次原生AX复制失败，根因未定；瞬时反馈视觉与完整冷启动复验未完成。**本次只验证双语文档、图示及排版，未重跑产品/原生剪贴板测试或重启桌面。**
 
-真实桌面中已核对两个会话的完整 ID/模板剪贴板、A→B→A、Enter/Space 键盘复制及 965/701 宽窗口布局。但也曾观察到一次原生 AX 复制失败，根因未定；瞬时成功反馈的原生视觉及完整冷启动复验未完成，不将部分通过表述为完整验收。机器专属记录不纳入仓库。
+## 许可状态
+
+当前仓库没有独立LICENSE文件。本轮保留此状态，不擅自新增许可证。
+
+<div align="center"><sub>接续需要事实，不只是一个 ID。 · <a href="README.en.md">Read in English →</a></sub></div>
