@@ -1,6 +1,6 @@
 {
   "name": "session-continuation",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "type": "module",
   "description": "在 DSH 会话标题旁复制完整会话 ID 或历史接续提示词。",

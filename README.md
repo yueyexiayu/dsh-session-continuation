@@ -4,11 +4,9 @@
 <p><strong>把会话定位和接续要求带走，不自动带走历史。</strong></p>
 <p>DeepSeek Harness 会话标题旁的「会话 ID」与「复制接续指令」。</p>
 <p><strong>简体中文</strong> · <a href="README.en.md">English</a></p>
-<p><a href="package.json">v0.1.1</a> · DSH desktop plugin</p>
+<p><a href="package.json">v0.1.2</a> · DSH desktop plugin</p>
 <p><a href="#核心能力">核心能力</a> · <a href="#工作方式">工作方式</a> · <a href="#快速开始">快速开始</a> · <a href="#复制模板">复制模板</a> · <a href="#验证与边界">验证与边界</a></p>
 </div>
-
----
 
 一个只显示和复制信息的桌面本地插件：不创建对话、不发送提示词、不读取或导出历史，也不改 DSH 官方源码。**会话 ID 只是定位符，不代表新会话已自动读取全部上下文。**
 

@@ -4,7 +4,7 @@
 <p><strong>Take the session locator and continuation request—not an automatic history export.</strong></p>
 <p>Session ID and Copy continuation buttons beside the DeepSeek Harness session title.</p>
 <p><a href="README.md">简体中文</a> · <strong>English</strong></p>
-<p><a href="package.json">v0.1.1</a> · DSH desktop plugin</p>
+<p><a href="package.json">v0.1.2</a> · DSH desktop plugin</p>
 <p><a href="#features">Features</a> · <a href="#how-it-works">How it works</a> · <a href="#quick-start">Quick start</a> · <a href="#copied-template">Copied template</a> · <a href="#validation-and-boundaries">Validation and boundaries</a></p>
 </div>
 
