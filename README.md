@@ -4,7 +4,7 @@
 <p><strong>把会话定位和接续要求带走，不自动带走历史。</strong></p>
 <p>DeepSeek Harness 会话标题旁的「会话 ID」与「复制接续指令」。</p>
 <p><strong>简体中文</strong> · <a href="README.en.md">English</a></p>
-<p><a href="package.json">v0.1.2</a> · DSH desktop plugin</p>
+<p><a href="package.json">v0.1.3</a> · DSH desktop plugin</p>
 <p><a href="#核心能力">核心能力</a> · <a href="#工作方式">工作方式</a> · <a href="#快速开始">快速开始</a> · <a href="#复制模板">复制模板</a> · <a href="#验证与边界">验证与边界</a></p>
 </div>
 
